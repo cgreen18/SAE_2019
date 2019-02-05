@@ -16,7 +16,8 @@ from pymavlink import mavutil
 with open('SAE_Data.csv','wb') as csvfile:
     thiswriter = csv.writer(csvfile, delimiter = ' ', quoting=csv.QUOTE_MINIMAL)
 #toggle whether to collect data into array
-global CSVtog = False
+global csvtog
+csvtog = False
 
 #dataArr:
 #row1 - time
