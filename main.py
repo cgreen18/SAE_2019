@@ -9,15 +9,21 @@ import tkFont
 from dronekit import connect, VehicleMode, Command, LocationGlobal
 from pymavlink import mavutil
 
+
+
+
 #set up csv file
 global csvtog
 csvtog = False
 
 global csvfile
-csvfile = open('SAE_Data.csv','wb')
+timename = time.strftime('%y-%m-%d___%H_%M_%S')
+csvfile = open('SAE_Data_' + timename + '.csv','wb')
 
 thiswriter = csv.writer(csvfile, delimiter = ' ', quoting=csv.QUOTE_MINIMAL)
 thiswriter.writerow(['Time:             ' , 'Ground speed:        ', 'Roll:               ', 'Pitch:                  ', 'Altitude:               '])
+
+
 
 # Connect to vehicle
 connectionString = "com4"
@@ -209,5 +215,7 @@ stop.place(x = btn_x+3*175, y = btn_y)
 
 
 
+
 tick()
+
 window.mainloop()
