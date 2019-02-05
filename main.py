@@ -10,8 +10,6 @@ from dronekit import connect, VehicleMode, Command, LocationGlobal
 from pymavlink import mavutil
 
 
-
-
 #set up csv file
 global csvtog
 csvtog = False
@@ -22,8 +20,6 @@ csvfile = open('SAE_Data_' + timename + '.csv','wb')
 
 thiswriter = csv.writer(csvfile, delimiter = ' ', quoting=csv.QUOTE_MINIMAL)
 thiswriter.writerow(['Time:             ' , 'Ground speed:        ', 'Roll:               ', 'Pitch:                  ', 'Altitude:               '])
-
-
 
 # Connect to vehicle
 connectionString = "com4"
@@ -129,9 +125,17 @@ def tick():
 # get flight data
 def getFlightData():
     groundSpeed = vehicle.groundspeed
+    groundSpeed = int(groundSpeed*3.28084)
     roll = vehicle.attitude.roll
     pitch = vehicle.attitude.pitch
     altitude = vehicle.location.global_relative_frame.alt
+    altitude = int(altitude*3.28084)
+
+
+    lat2 = round(vehicle.location.global_frame.lat, 3)
+    long2 = round(vehicle.location.global_frame.lon, 3)
+
+    
     if altitude < 0:    # Dont let the dropTime become imaginary
         altitude = 0
 
@@ -141,28 +145,20 @@ def getFlightData():
         timeNow = time.strftime('%y-%m-%d %H:%M:%S')
         global csvfile
         thiswriter = csv.writer(csvfile, delimiter = ' ', quoting=csv.QUOTE_MINIMAL)
-        thiswriter.writerow([timeNow , groundSpeed, roll, pitch, altitude])
+        thiswriter.writerow([timeNow ,'____', groundSpeed,'_____', roll,'_____', pitch,'_____', altitude])
 
-    updateHUD(groundSpeed, roll, pitch, altitude)
+    updateHUD(groundSpeed, roll, pitch, altitude,lat2,long2)
 
-    return (groundSpeed, roll, pitch, altitude)
+    return (groundSpeed, roll, pitch, altitude,lat2,long2)
 
 
-def updateHUD(groundSpeed, roll, pitch, altitude):
-    altitude = int(altitude*3.28084)
-    
-    
+def updateHUD(groundSpeed, roll, pitch, altitude,lat2,long2):
     telem.config(text = altitude)
 
-    groundSpeed = int(groundSpeed*3.28084)
-
     speed_text.config(text = groundSpeed)
-
-    lat2 = round(vehicle.location.global_frame.lat, 3)
     
     lat_info.config(text = lat2)
-
-    long2 = round(vehicle.location.global_frame.lon, 3)
+    
     long_info.config(text = long2)
 
     return
